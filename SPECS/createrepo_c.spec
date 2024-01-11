@@ -25,10 +25,11 @@
 Summary:        Creates a common metadata repository
 Name:           createrepo_c
 Version:        0.20.1
-Release:        1%{?dist}
+Release:        2%{?dist}
 License:        GPLv2+
 URL:            https://github.com/rpm-software-management/createrepo_c
 Source0:        %{url}/archive/%{version}/%{name}-%{version}.tar.gz
+Patch1:         0001-Test_compare_contents_instead_of_checksum-cleanup.patch
 
 BuildRequires:  cmake
 BuildRequires:  gcc
@@ -175,6 +176,9 @@ ln -sr %{buildroot}%{_bindir}/modifyrepo_c %{buildroot}%{_bindir}/modifyrepo
 %{python3_sitearch}/%{name}-%{version}-py%{python3_version}.egg-info
 
 %changelog
+* Mon Jun 26 2023 Jaroslav Rohel <jrohel@redhat.com> - 0.20.1-2
+- Change test to compare contents instead of checksum, cleanup (RhBug:2130179)
+
 * Thu Sep 22 2022 Lukas Hrazky <lhrazky@redhat.com> - 0.20.1-1
 - Update to 0.20.1
 - createrepo_c shouldn't silently produce duplicate-NEVRA repos
