@@ -25,11 +25,15 @@
 Summary:        Creates a common metadata repository
 Name:           createrepo_c
 Version:        0.20.1
-Release:        2%{?dist}
+Release:        4%{?dist}
 License:        GPLv2+
 URL:            https://github.com/rpm-software-management/createrepo_c
 Source0:        %{url}/archive/%{version}/%{name}-%{version}.tar.gz
 Patch1:         0001-Test_compare_contents_instead_of_checksum-cleanup.patch
+Patch2:         0002-Add-zstd-compression-support.patch
+Patch3:         0003-Add-unittests-for-zstd-compression.patch
+Patch4:         0004-Fix-error-a-label-can-only-be-part-of-a-statement.patch
+Patch5:         0005-Set-compression-level-for-zstd-to-level-10.patch
 
 BuildRequires:  cmake
 BuildRequires:  gcc
@@ -66,6 +70,10 @@ Obsoletes:      createrepo < 0.11.0
 Provides:       createrepo = %{version}-%{release}
 %endif
 
+# We need git for the build because we are applying binary patches.
+# Configured as -S git for the autosetup macro.
+BuildRequires:  git-core
+
 %description
 C implementation of Createrepo.
 A set of utilities (createrepo_c, mergerepo_c, modifyrepo_c)
@@ -98,7 +106,7 @@ Requires:       %{name}-libs = %{version}-%{release}
 Python 3 bindings for the createrepo_c library.
 
 %prep
-%autosetup -p1
+%autosetup -p1 -S git
 
 mkdir build-py3
 
@@ -176,6 +184,12 @@ ln -sr %{buildroot}%{_bindir}/modifyrepo_c %{buildroot}%{_bindir}/modifyrepo
 %{python3_sitearch}/%{name}-%{version}-py%{python3_version}.egg-info
 
 %changelog
+* Fri Mar 14 2025 Ales Matej <amatej@redhat.com> - 0.20.1-4
+- Add git build require, needed for binary patches (RHEL-67689)
+
+* Mon Mar 10 2025 Ales Matej <amatej@redhat.com> - 0.20.1-3
+- Add zstd compression support (RHEL-67689)
+
 * Mon Jun 26 2023 Jaroslav Rohel <jrohel@redhat.com> - 0.20.1-2
 - Change test to compare contents instead of checksum, cleanup (RhBug:2130179)
 
